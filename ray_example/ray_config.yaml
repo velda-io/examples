@@ -1,0 +1,47 @@
+# The cluster name.
+# The head-node can be accessible with ray-[clustername] as DNS name within Velda.
+cluster_name: velda
+
+# Use a custom node provider
+provider:
+  type: external                 # "external" = custom provider
+  module: ray_velda.VeldaNodeProvider  # python module path with your NodeProvider subclass
+  use_internal_ips: true
+
+auth: {}
+# Node types & scaling bounds
+available_node_types:
+  ray.head.default:
+    resources: {"CPU": 4}
+    max_workers: 1
+    node_config: {"pool": "cpu-4"}
+  worker.default:
+    resources: {"CPU": 1}
+    min_workers: 0
+    max_workers: 2
+    node_config: {"pool": "shell"}
+  worker.gpu:
+    resources: {"CPU": 4, "GPU": 1}
+    min_workers: 0
+    max_workers: 2
+    node_config: {"pool": "gpu-t4-1"}
+
+head_node_type: ray.head.default
+max_workers: 50
+
+# Global autoscaler knobs (optional)
+upscaling_speed: 1.0
+idle_timeout_minutes: 10
+
+# Empty setup commands for cluster launcher's checking
+initialization_commands: []
+setup_commands: []
+head_setup_commands: []
+worker_setup_commands: []
+file_mounts: {}
+cluster_synced_files: []
+
+# The autoscaling-config must have same absolute path as current file.
+head_start_ray_commands: ['ray start --head --autoscaling-config ~/velda-demo/ray_config.yaml --port=6379']
+
+worker_start_ray_commands: ['ray start --address=$RAY_HEAD_IP:6379']
