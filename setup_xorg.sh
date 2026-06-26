@@ -87,8 +87,8 @@ sleep 2
 echo "Starting websockify, logs at /tmp/websockify.log"
 websockify --web /usr/share/novnc localhost:6080 localhost:5901 >/tmp/websockify.log 2>&1 &
 
-instance_id=$(grep 'instance:' /run/velda/velda.yaml  | grep -o '[0-9]*')
-echo "URL: https://6080-xorg-$instance_id.ne.velda.cloud/vnc.html"
+instance_id=\$(grep 'instance:' /run/velda/velda.yaml  | grep -o '[0-9]*')
+echo "URL: https://6080-xorg-\$instance_id.ne.velda.cloud/vnc.html"
 
 wait
 EOF
